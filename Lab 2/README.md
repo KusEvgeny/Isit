@@ -33,7 +33,7 @@
 
 ## 4. Диаграмма сценариев использования (Use Case)
 
-![](Lab 2/diagrams/images/use-cases.png)
+![](diagrams/images/use-cases.png)
 
 ## 5. Компоненты системы
 
@@ -46,7 +46,7 @@ API-сервер | Обработка запросов, проверка пра�
 
 ## 6. Диаграмма компонентов
 
-![](Lab 2/diagrams/images/architecture.png)
+![](diagrams/images/architecture.png)
 
 ## 7. Концепция информационной системы
 
