@@ -1,0 +1,33 @@
+@startsalt
+!define PRIMARY_COLOR #2563EB
+!define TEXT_COLOR #1F2937
+!define BORDER_COLOR #E5E7EB
+!define BG_COLOR #FFFFFF
+
+skinparam backgroundColor #F3F4F6
+skinparam fontColor TEXT_COLOR
+skinparam fontSize 13
+skinparam defaultFontName Arial
+
+{
+  <b><color PRIMARY_COLOR>Система учёта офисного оборудования</color></b> | | | <b>👤 Сотрудник</b> | [Выход]
+  .
+  {^"<b>Моя техника</b>"
+   <size:11><color #6B7280>Оборудование, закреплённое за вами</color></size>
+  }
+  .
+  {
+    <b>Номер</b> | <b>Название</b> | <b>Категория</b> | <b>Местоположение</b> | <b>Статус</b> | <b>Действия</b>
+    INV-001 | Компьютер Lenovo | Компьютеры | Каб. 101 | В работе | [Создать заявку]
+    INV-002 | Монитор Dell 17" | Мониторы | Каб. 101 | В работе | [Создать заявку]
+    INV-005 | Клавиатура Logitech | Периферия | Каб. 101 | В работе | [Создать заявку]
+  }
+  .
+  <b>Мои заявки</b>
+  {
+    <b>Дата</b> | <b>Оборудование</b> | <b>Описание</b> | <b>Статус</b>
+    12.05.2025 | INV-001 Компьютер Lenovo | Не включается | Новая
+    01.04.2025 | INV-002 Монитор Dell 17" | Мигает экран | Одобрена
+  }
+}
+@endsalt

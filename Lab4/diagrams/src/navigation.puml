@@ -1,0 +1,43 @@
+@startuml navigation
+title Схема навигации между экранами
+
+[*] --> Login : открытие приложения
+
+state "Авторизация" as Login
+state "Главная страница" as Dashboard
+state "Список оборудования" as EquipList
+state "Просмотр оборудования" as EquipDetail
+state "Создание/редактирование\nоборудования" as EquipForm
+state "Заявки на ремонт" as Requests
+state "Моя техника" as MyEquipment
+
+Login --> Dashboard : успешный вход
+
+Dashboard --> EquipList : раздел оборудования
+Dashboard --> Requests : раздел заявок
+Dashboard --> MyEquipment : раздел моей техники
+
+EquipList --> EquipDetail : выбор оборудования из списка
+EquipList --> EquipForm : + создать оборудование
+EquipList --> Dashboard : главная
+
+EquipDetail --> EquipList : раздел оборудования
+EquipDetail --> EquipForm : редактировать оборудование
+EquipDetail --> Requests : оставить заявку
+
+EquipForm --> EquipList : сохранить/отмена
+
+Requests --> EquipDetail : открыть оборудование
+Requests --> Dashboard : главная
+
+MyEquipment --> Requests : создать заявку
+MyEquipment --> Dashboard : главная
+
+Dashboard --> Login : выход из админки
+EquipList --> Login : выход из админки
+EquipDetail --> Login : выход из админки
+EquipForm --> Login : выход из админки
+Requests --> Login : выход из админки
+MyEquipment --> Login : выход из админки
+
+@enduml
