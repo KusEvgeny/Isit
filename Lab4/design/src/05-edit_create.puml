@@ -1,0 +1,30 @@
+@startsalt
+!define PRIMARY_COLOR #2563EB
+!define TEXT_COLOR #1F2937
+!define BORDER_COLOR #E5E7EB
+!define BG_COLOR #FFFFFF
+
+skinparam backgroundColor #F3F4F6
+skinparam fontColor TEXT_COLOR
+skinparam fontSize 13
+skinparam defaultFontName Arial
+
+{
+  <b><color PRIMARY_COLOR>Система учёта офисного оборудования</color></b> | | | <b>👤 Администратор</b> | [Выход]
+  .
+  {^"<b>Создание/редактирование оборудования</b>"
+   <size:11><color #6B7280>Заполните данные оборудования</color></size>
+  }
+  .
+  <b>Номер:</b> | "INV-001"
+  <b>Название:</b> | "Компьютер Lenovo"
+  <b>Категория:</b> | [Компьютеры ▼]
+  <b>Модель:</b> | "ThinkCentre M70"
+  <b>Серийный номер:</b> | "SN-987654321"
+  <b>Местоположение:</b> | [Каб. 101 ▼]
+  <b>Статус:</b> | [В работе ▼]
+  <b>Ответственный:</b> | [Иванов И.И. ▼]
+  .
+  [Сохранить] | [Отмена]
+}
+@endsalt

@@ -1,0 +1,29 @@
+@startsalt
+!define PRIMARY_COLOR #2563EB
+!define BUTTON_HOVER #1D4ED8
+!define TEXT_COLOR #1F2937
+!define BORDER_COLOR #E5E7EB
+!define BG_COLOR #FFFFFF
+
+skinparam backgroundColor #F3F4F6
+skinparam fontColor TEXT_COLOR
+skinparam fontSize 13
+skinparam defaultFontName Arial
+
+{
+  {
+    {^"<color PRIMARY_COLOR><b>Вход в систему</b></color>"
+     <size:11><color #6B7280>Система учёта офисного оборудования</color></size>
+    }
+    .
+    <b>Email</b> | "👤 user@team.local"
+    <b>Пароль</b> | "🔒 **********"
+    .
+    [ ] <size:12>Запомнить меня</size>
+    .
+    [<color PRIMARY_COLOR><b>  → Войти  </b></color>]
+    .
+    <u><color #2563EB>Забыли пароль?</color></u>
+  }
+}
+@endsalt
