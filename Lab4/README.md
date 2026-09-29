@@ -75,6 +75,7 @@
 
 **Структура репозитория:**
 
+```
 lab4/
 ├── README.md
 ├── diagrams/
@@ -99,3 +100,4 @@ lab4/
         ├── 05-edit_create.puml
         ├── 06-application.puml
         └── 07-my_equipment.puml
+```
