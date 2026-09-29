@@ -34,7 +34,7 @@
 
 ![Схема навигации](./diagrams/images/navigation.png)
 
-***Исходник: *** [./diagrams/src/navigation.puml](./diagrams/src/navigation.puml)
+***Исходник:*** [./diagrams/src/navigation.puml](./diagrams/src/navigation.puml)
 
 ### 3. Прототипы страниц
 
