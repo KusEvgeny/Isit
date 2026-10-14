@@ -1,17 +1,17 @@
 <?php
-// app/Models/ProjectRepository.php — модель проектов. Устроена так же, как TaskRepository.
+// app/Models/EmployeeRepository.php — модель сотрудников.
 
 declare(strict_types=1);
 
 namespace App\Models;
 
-final class ProjectRepository
+final class EmployeeRepository
 {
     private string $file;
 
     public function __construct()
     {
-        $this->file = BASE_PATH . '/storage/projects.json';
+        $this->file = BASE_PATH . '/storage/employees.json';
     }
 
     public function all(): array
@@ -21,9 +21,9 @@ final class ProjectRepository
 
     public function find(int $id): ?array
     {
-        foreach ($this->all() as $project) {
-            if ($project['id'] === $id) {
-                return $project;
+        foreach ($this->all() as $employee) {
+            if ($employee['id'] === $id) {
+                return $employee;
             }
         }
         return null;

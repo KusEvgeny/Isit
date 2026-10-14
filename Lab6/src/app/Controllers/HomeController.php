@@ -5,29 +5,29 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Models\ProjectRepository;
-use App\Models\TaskRepository;
+use App\Models\EmployeeRepository;
+use App\Models\EquipmentRepository;
 
 final class HomeController
 {
     // GET /
     public function index(): void
     {
-        $tasks = (new TaskRepository())->all();
-        $projects = (new ProjectRepository())->all();
+        $items     = (new EquipmentRepository())->all();
+        $employees = (new EmployeeRepository())->all();
 
-        $byStatus = ['new' => 0, 'in_progress' => 0, 'done' => 0];
-        foreach ($tasks as $task) {
-            if (isset($byStatus[$task['status']])) {
-                $byStatus[$task['status']]++;
+        $byStatus = ['in_use' => 0, 'in_repair' => 0, 'archived' => 0];
+        foreach ($items as $item) {
+            if (isset($byStatus[$item['status']])) {
+                $byStatus[$item['status']]++;
             }
         }
 
         view('home', [
-            'title'         => 'Главная',
-            'total'         => count($tasks),
-            'byStatus'      => $byStatus,
-            'projectsCount' => count($projects),
+            'title'          => 'Главная',
+            'total'          => count($items),
+            'byStatus'       => $byStatus,
+            'employeesCount' => count($employees),
         ]);
     }
 }
