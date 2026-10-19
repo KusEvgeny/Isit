@@ -1,0 +1,66 @@
+[
+    {
+        "id": 1,
+        "employee_id": 1,
+        "number": "INV-001",
+        "title": "Компьютер Lenovo",
+        "category": "computer",
+        "status": "in_use"
+    },
+    {
+        "id": 2,
+        "employee_id": 1,
+        "number": "INV-002",
+        "title": "Монитор Dell 17\"",
+        "category": "monitor",
+        "status": "in_use"
+    },
+    {
+        "id": 3,
+        "employee_id": 2,
+        "number": "INV-003",
+        "title": "Принтер HP-201",
+        "category": "printer",
+        "status": "in_repair"
+    },
+    {
+        "id": 4,
+        "employee_id": 2,
+        "number": "INV-004",
+        "title": "Клавиатура Logitech",
+        "category": "peripheral",
+        "status": "archived"
+    },
+    {
+        "id": 5,
+        "employee_id": 3,
+        "number": "INV-005",
+        "title": "Компьютер HP",
+        "category": "computer",
+        "status": "in_use"
+    },
+    {
+        "id": 6,
+        "employee_id": 3,
+        "number": "INV-006",
+        "title": "Монитор Samsung 24\"",
+        "category": "monitor",
+        "status": "in_repair"
+    },
+    {
+        "id": 7,
+        "employee_id": 1,
+        "number": "INV-007",
+        "title": "МФУ Canon",
+        "category": "printer",
+        "status": "in_use"
+    },
+    {
+        "id": 8,
+        "employee_id": 0,
+        "number": "1111",
+        "title": "ыв3",
+        "category": "computer",
+        "status": "in_use"
+    }
+]
