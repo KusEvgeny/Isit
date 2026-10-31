@@ -1,0 +1,82 @@
+@startuml er
+' ER-диаграмма базы данных (PlantUML)
+' Предметная область: Система учёта офисного оборудования
+
+hide circle
+skinparam linetype ortho
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam class {
+    BackgroundColor #FFFFFF
+    BorderColor #333333
+    ArrowColor #555555
+    HeaderBackgroundColor #E8F0FE
+}
+
+entity "employees\nСотрудники" as employees {
+    * id : SERIAL <<PK>>
+    --
+    * name : VARCHAR(100)
+    * position : VARCHAR(100)
+    * created_at : TIMESTAMP
+}
+
+entity "employee_profiles\nПрофили" as employee_profiles {
+    * employee_id : INTEGER <<PK, FK>>
+    --
+    phone : VARCHAR(20)
+    cabinet : VARCHAR(20) <<UNIQUE>>
+    email : VARCHAR(100) <<UNIQUE>>
+}
+
+entity "categories\nКатегории" as categories {
+    * id : SERIAL <<PK>>
+    --
+    * title : VARCHAR(150) <<UNIQUE>>
+    description : TEXT
+    * owner_id : INTEGER <<FK>>
+    * created_at : TIMESTAMP
+}
+
+entity "equipment\nОборудование" as equipment {
+    * id : SERIAL <<PK>>
+    --
+    * category_id : INTEGER <<FK>>
+    employee_id : INTEGER <<FK>>
+    * inventory_number : VARCHAR(50) <<UNIQUE>>
+    * title : VARCHAR(200) <<CHECK>>
+    * status : VARCHAR(20) <<CHECK>>
+    * created_at : TIMESTAMP
+}
+
+entity "requests\nЗаявки" as requests {
+    * id : SERIAL <<PK>>
+    --
+    * equipment_id : INTEGER <<FK>>
+    * author_id : INTEGER <<FK>>
+    * description : TEXT
+    * created_at : TIMESTAMP
+}
+
+entity "tags\nТеги" as tags {
+    * id : SERIAL <<PK>>
+    --
+    * name : VARCHAR(50) <<UNIQUE>>
+}
+
+entity "equipment_tags\nТеги оборудования" as equipment_tags {
+    * equipment_id : INTEGER <<PK, FK>>
+    * tag_id : INTEGER <<PK, FK>>
+}
+
+' Связи:
+employees ||--o| employee_profiles : "1 : 1\nпрофиль"
+employees ||--o{ categories : "1 : N\nответственный"
+categories ||--o{ equipment : "1 : N\nкатегория"
+employees |o--o{ equipment : "1 : N\nзакреплено за"
+equipment ||--o{ requests : "1 : N\nзаявки"
+employees ||--o{ requests : "1 : N\nавтор заявки"
+equipment ||--o{ equipment_tags : "1 : N\nN:M"
+tags ||--o{ equipment_tags : "1 : N\nN:M"
+
+@enduml
