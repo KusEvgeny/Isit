@@ -1,61 +1,55 @@
 -- =====================================================================
--- Лабораторная работа №8. Часть 5. Большой объём тестовых данных (ГОТОВО)
--- На 7 задачах любой запрос выполняется мгновенно, индексы не видны.
--- Поэтому генерируем 200 участников, 1000 проектов, 500 000 задач и 1 000 000 комментариев.
+-- Лабораторная работа №8. Часть 5. Большой объём тестовых данных
 -- Запуск в psql:  \i /sql/05_test_data.sql   (после 02_seed.sql; занимает 10–30 секунд)
--- При переносе на свою предметную область замените имена таблиц и столбцов,
--- допустимые значения статусов и количество строк (основная таблица — не меньше 100 000).
 -- =====================================================================
 
 \timing on
-
--- одинаковое «случайное» заполнение при каждом запуске
 SELECT setseed(0.42);
 
-INSERT INTO users (name, email, role)
-SELECT 'Участник ' || i,
-       'user' || i || '@example.com',
-       (ARRAY['developer', 'developer', 'tester', 'manager'])[1 + floor(random() * 4)::int]
+-- 1. Генерируем 200 сотрудников
+INSERT INTO employees (name, position)
+SELECT 'Сотрудник ' || i, 'Должность ' || i
 FROM generate_series(1, 200) AS i;
 
-INSERT INTO projects (title, description, owner_id)
-SELECT 'Проект №' || i, 'Сгенерированный проект для проверки производительности', 1
-FROM generate_series(1, 1000) AS i;
+-- 2. Генерируем 1000 категорий
+-- (owner_id берем из массива существующих id сотрудников)
+WITH e AS (SELECT array_agg(id) AS ids FROM employees)
+INSERT INTO categories (title, description, owner_id)
+SELECT 'Категория №' || i, 'Описание', e.ids[1 + floor(random() * cardinality(e.ids))::int]
+FROM generate_series(1, 1000) AS i, e;
 
--- Номера существующих проектов и участников собираем в массивы и выбираем из них случайно:
--- так внешние ключи всегда указывают на существующие строки.
-WITH p AS (SELECT array_agg(id) AS ids FROM projects),
-     u AS (SELECT array_agg(id) AS ids FROM users)
-INSERT INTO tasks (project_id, assignee_id, title, status, priority, due_date, created_at)
-SELECT p.ids[1 + floor(random() * cardinality(p.ids))::int],
-       CASE WHEN random() < 0.1 THEN NULL                          -- 10% задач без исполнителя
-            ELSE u.ids[1 + floor(random() * cardinality(u.ids))::int] END,
-       'Тестовая задача №' || g.i,
-       CASE WHEN g.r < 0.60 THEN 'done'                             -- 60% выполнено
-            WHEN g.r < 0.85 THEN 'in_progress'                      -- 25% в работе
-            ELSE 'new' END,                                         -- 15% новых
-       (ARRAY['low', 'medium', 'high'])[1 + floor(random() * 3)::int],
-       DATE '2025-01-01' + floor(random() * 730)::int,
+-- 3. Генерируем 500 000 единиц оборудования
+-- (category_id и employee_id берем из массивов, чтобы не нарушить внешние ключи)
+WITH c AS (SELECT array_agg(id) AS ids FROM categories),
+     e AS (SELECT array_agg(id) AS ids FROM employees)
+INSERT INTO equipment (category_id, employee_id, inventory_number, title, status, created_at)
+SELECT c.ids[1 + floor(random() * cardinality(c.ids))::int],
+       CASE WHEN random() < 0.1 THEN NULL  -- 10% оборудования без ответственного
+            ELSE e.ids[1 + floor(random() * cardinality(e.ids))::int] END,
+       'INV-' || g.i,
+       'Тестовое оборудование №' || g.i,
+       CASE WHEN g.r < 0.60 THEN 'in_use'     -- 60% в работе
+            WHEN g.r < 0.85 THEN 'in_repair'   -- 25% в ремонте
+            ELSE 'archived' END,               -- 15% в архиве
        TIMESTAMP '2025-01-01' + random() * INTERVAL '640 days'
--- random() для статуса считается в подзапросе g: так он свой у каждой строки
-FROM (SELECT i, random() AS r FROM generate_series(1, 500000) AS i) AS g, p, u;
+FROM (SELECT i, random() AS r FROM generate_series(1, 500000) AS i) AS g, c, e;
 
--- номера задач тоже берём из массива: после скриптов 03 и 04 в нумерации есть пропуски
-WITH t AS (SELECT array_agg(id) AS ids FROM tasks),
-     u AS (SELECT array_agg(id) AS ids FROM users)
-INSERT INTO comments (task_id, author_id, body, created_at)
-SELECT t.ids[1 + floor(random() * cardinality(t.ids))::int],
-       u.ids[1 + floor(random() * cardinality(u.ids))::int],
-       'Комментарий №' || i,
+-- 4. Генерируем 1 000 000 заявок на ремонт
+WITH eq AS (SELECT array_agg(id) AS ids FROM equipment),
+     e  AS (SELECT array_agg(id) AS ids FROM employees)
+INSERT INTO requests (equipment_id, author_id, description, created_at)
+SELECT eq.ids[1 + floor(random() * cardinality(eq.ids))::int],
+       e.ids[1 + floor(random() * cardinality(e.ids))::int],
+       'Тестовая заявка №' || i,
        TIMESTAMP '2025-01-01' + random() * INTERVAL '640 days'
-FROM generate_series(1, 1000000) AS i, t, u;
+FROM generate_series(1, 1000000) AS i, eq, e;
 
--- обновить статистику, по которой планировщик выбирает способ выполнения запроса
+-- Обновляем статистику планировщика
 ANALYZE;
-
 \timing off
 
-SELECT 'users' AS table_name, COUNT(*) FROM users
-UNION ALL SELECT 'projects', COUNT(*) FROM projects
-UNION ALL SELECT 'tasks',    COUNT(*) FROM tasks
-UNION ALL SELECT 'comments', COUNT(*) FROM comments;
+-- Проверяем, сколько строк создалось
+SELECT 'employees' AS table_name, COUNT(*) FROM employees
+UNION ALL SELECT 'categories', COUNT(*) FROM categories
+UNION ALL SELECT 'equipment',  COUNT(*) FROM equipment
+UNION ALL SELECT 'requests',   COUNT(*) FROM requests;

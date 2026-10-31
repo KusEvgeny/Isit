@@ -1,13 +1,6 @@
 @startuml er
 ' ER-диаграмма базы данных (PlantUML)
-' Как открыть: расширение «PlantUML» для VS Code (Alt+D — предпросмотр)
-'              или сайт https://www.plantuml.com/plantuml (вставить текст файла).
-' PK — первичный ключ, FK — внешний ключ, * — обязательное поле (NOT NULL)
-'
-' Обозначения связей (стороны читаются «от таблицы к таблице»):
-'   ||--o{   один ко многим   (у одной строки слева много строк справа; справа может не быть ни одной)
-'   ||--o|   один к одному    (справа не больше одной строки)
-'   |o--o{   один ко многим, где ссылка необязательна (внешний ключ может быть NULL)
+' Предметная область: Система учёта офисного оборудования
 
 hide circle
 skinparam linetype ortho
@@ -20,17 +13,23 @@ skinparam class {
     HeaderBackgroundColor #E8F0FE
 }
 
-' ---------- ГОТОВО (образец) ----------
-entity "users\nучастники" as users {
+entity "employees\nСотрудники" as employees {
     * id : SERIAL <<PK>>
     --
     * name : VARCHAR(100)
-    * email : VARCHAR(255) <<UNIQUE>>
-    * role : VARCHAR(20) <<CHECK>>
+    * position : VARCHAR(100)
     * created_at : TIMESTAMP
 }
 
-entity "projects\nпроекты" as projects {
+entity "employee_profiles\nПрофили" as employee_profiles {
+    * employee_id : INTEGER <<PK, FK>>
+    --
+    phone : VARCHAR(20)
+    cabinet : VARCHAR(20) <<UNIQUE>>
+    email : VARCHAR(100) <<UNIQUE>>
+}
+
+entity "categories\nКатегории" as categories {
     * id : SERIAL <<PK>>
     --
     * title : VARCHAR(150) <<UNIQUE>>
@@ -39,17 +38,45 @@ entity "projects\nпроекты" as projects {
     * created_at : TIMESTAMP
 }
 
-users ||--o{ projects : "1 : N\nруководитель"
+entity "equipment\nОборудование" as equipment {
+    * id : SERIAL <<PK>>
+    --
+    * category_id : INTEGER <<FK>>
+    employee_id : INTEGER <<FK>>
+    * inventory_number : VARCHAR(50) <<UNIQUE>>
+    * title : VARCHAR(200) <<CHECK>>
+    * status : VARCHAR(20) <<CHECK>>
+    * created_at : TIMESTAMP
+}
 
-' ---------- TODO ----------
-' Добавьте по образцу сущности user_profiles, tasks, comments, tags, task_tags
-' (поля — как в sql/01_schema.sql) и связи между ними:
-'   users    ||--o| user_profiles   1 : 1
-'   projects ||--o{ tasks           1 : N
-'   users    |o--o{ tasks           1 : N, исполнитель необязателен
-'   tasks    ||--o{ comments        1 : N
-'   users    ||--o{ comments        1 : N
-'   tasks    ||--o{ task_tags       N : M (через связующую таблицу)
-'   tags     ||--o{ task_tags       N : M
-' Затем перенесите диаграмму на свою предметную область.
+entity "requests\nЗаявки" as requests {
+    * id : SERIAL <<PK>>
+    --
+    * equipment_id : INTEGER <<FK>>
+    * author_id : INTEGER <<FK>>
+    * description : TEXT
+    * created_at : TIMESTAMP
+}
+
+entity "tags\nТеги" as tags {
+    * id : SERIAL <<PK>>
+    --
+    * name : VARCHAR(50) <<UNIQUE>>
+}
+
+entity "equipment_tags\nТеги оборудования" as equipment_tags {
+    * equipment_id : INTEGER <<PK, FK>>
+    * tag_id : INTEGER <<PK, FK>>
+}
+
+' Связи:
+employees ||--o| employee_profiles : "1 : 1\nпрофиль"
+employees ||--o{ categories : "1 : N\nответственный"
+categories ||--o{ equipment : "1 : N\nкатегория"
+employees |o--o{ equipment : "1 : N\nзакреплено за"
+equipment ||--o{ requests : "1 : N\nзаявки"
+employees ||--o{ requests : "1 : N\nавтор заявки"
+equipment ||--o{ equipment_tags : "1 : N\nN:M"
+tags ||--o{ equipment_tags : "1 : N\nN:M"
+
 @enduml
